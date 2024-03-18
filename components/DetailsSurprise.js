@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, View, StyleSheet, Image } from 'react-native';
 
-const Details = ({ route }) => {
+const DetailsSurprise = ({ route }) => {
   const { ingredients } = route.params;
 
 return (
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Details;
+export default DetailsSurprise;

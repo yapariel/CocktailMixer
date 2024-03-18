@@ -1,11 +1,10 @@
-import { useNavigation } from '@react-navigation/core'
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList, Modal } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
 const Home = ({navigation}) => {
   const [ingredients, setIngredients] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [numberofIngredients, setNumberofIngredients] = useState('100')
   const [loading, setLoading] = useState(false);
 
   const apiKey = `1`;
@@ -26,7 +25,21 @@ const Home = ({navigation}) => {
   Keyboard.dismiss();
   setSearchQuery('');
 }
-  
+
+  const fetchRandomCocktail = async () => {
+    setLoading(true);
+    try {
+      let resp = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
+      let respJson = await resp.json();
+      console.log('Random Cocktail:', respJson.drinks[0]);
+      navigation.navigate('Random Recommendation', { ingredients: respJson.drinks[0] });
+    } catch (error) {
+      console.error('Error fetching random cocktail:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true)
     apiCall()
@@ -39,13 +52,15 @@ const Home = ({navigation}) => {
       style={styles.inputField}
       onChangeText={text => setSearchQuery(text)}
       />
-      </View>
-
       <TouchableOpacity style={styles.button}
       onPress={apiCall}
       title='submit'>
-        <Text style={styles.buttonText}>Search</Text>
+        <FontAwesome name="search" size={20} color="white" />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button1} onPress={fetchRandomCocktail}>
+          <FontAwesome name="gift" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
 
       <SafeAreaView style={{ flex: 1 }}>
         {loading ? (
@@ -85,30 +100,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5
   },
+    ingredients: {
+    fontSize: 20,
+    color: '#ffba00',
+  },
   inputField: {
-    height: '120%',
-    width: '97%',
+    height: '60%',
+    width: '70%',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 10,
     marginTop: 10,
     paddingLeft: 15
   },
-  buttons:{
+  buttons: {
     flexDirection: 'row'
   },
   button: {
-    backgroundColor: '#ffba00',
-    width: '97%',
-    height: '120%',
+    backgroundColor: '#f35c02',
+    width: '10%',
+    height: '50%',
     alignItems: 'center',
-    margin: 15,
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 10,
+    marginRight: 5,
     height: 35,
-    borderRadius: 20,
+    borderRadius: 10,
     justifyContent: 'center',
-    marginTop: 30
+    marginTop: 10
+  },
+  button1: {
+    backgroundColor: '#f38901',
+    width: '10%',
+    height: '50%',
+    alignItems: 'center',
+    height: 35,
+    borderRadius: 10,
+    justifyContent: 'center',
+    marginTop: 10,
   },
   buttonText: {
-
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
@@ -116,7 +147,8 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
-    borderRadius: 20
+    borderRadius: 20,
+    resizeMode: 'cover',
   },
   label: {
     fontSize: 15,
@@ -124,16 +156,18 @@ const styles = StyleSheet.create({
     color: '#ffba00',
     fontWeight: '700'
   },
-  ingredients: {
+  recipe: {
     shadowColor: 'black',
     shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
     borderRadius: 20,
     backgroundColor: 'white',
     margin: 5,
     marginBottom: 5
-  }
-})
+  },
+
+});
+
 export default Home;

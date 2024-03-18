@@ -1,14 +1,24 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Image } from 'react-native';
+import React from 'react';
 
 const Header = (props) => {
-  return (
-    <View style={{marginLeft:15}}>
-      <Text style={{fontWeight: 'bold', fontSize:28}}>
-        {props.name}
-      </Text>
-    </View>
-  )
-}
+    return (
+        <View style={{ alignItems: 'center', justifyContent: 'center'}}>
+            <Image
+                source={require('../assets/header.png')}
+                style={styles.imageStyle}
+            />
+        </View>
+    );
+};
 
-export default Header
+const styles = {
+    imageStyle: {
+        width: 100,
+        height: 70,
+        marginTop: 30,
+        resizeMode: 'contain'
+    }
+};
+
+export default Header;
