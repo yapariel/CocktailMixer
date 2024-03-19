@@ -1,105 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet, Image } from 'react-native';
 
 const Details = ({ route }) => {
   const { ingredients } = route.params;
+  const [ingredientImages, setIngredientImages] = useState({});
+
+    useEffect(() => {
+        const fetchIngredientImages = async () => {
+        const ingredientImagesData = {};
+        const ingredientsList = [];
+        
+        for (let i = 1; i <= 15; i++) {
+            const ingredientName = ingredients[`strIngredient${i}`];
+            if (ingredientName) {
+            ingredientsList.push(ingredientName);
+            }
+        }
+            await Promise.all(
+            ingredientsList.map(async (ingredient) => {
+            try {
+                const response = await fetch(`https://www.thecocktaildb.com/images/ingredients/${ingredient}-Small.png`);
+                const imageUrl = response.ok ? `https://www.thecocktaildb.com/images/ingredients/${ingredient}-Small.png` : 'https://www.thecocktaildb.com/images/ingredients/default.jpg';
+                ingredientImagesData[ingredient] = imageUrl;
+            } catch (error) {
+                console.error('Error fetching ingredient image:', error);
+            }
+            })
+        );
+        setIngredientImages(ingredientImagesData);
+        };
+
+        fetchIngredientImages();
+    }, [ingredients]);
+
+    const chunkArray = (array, chunkSize) => {
+        const chunkedArray = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+        chunkedArray.push(array.slice(i, i + chunkSize));
+        }
+        return chunkedArray;
+    };
 
 return (
     <ScrollView>
         <View style={styles.details}>
-            <View style={styles.item}>
-                <Text style={{ fontSize: 22, color: '#ffba00', fontWeight: '800' }}>
-                    Name:
-                </Text>
-                <Text style={styles.ingredients}> {ingredients.strDrink}</Text>
+            <View style={styles.thumb}>
+            <Image style={styles.image} source={{ uri: ingredients.strDrinkThumb }} />
+            <View style={styles.titlebg}>
+            <Text style={styles.title}> {ingredients.strDrink}</Text>
             </View>
-
-            <View style={styles.item}>
-                <Text style={{ fontSize: 22, color: '#ffba00', fontWeight: '800' }}>
-                    Ingredients and Measurements:
+            </View>
+            <View style={styles.item2}>
+                <Text style={{ fontSize: 20, color: '#ffba00', fontWeight: '800' }}>
+                    Ingredients and Measurements
                 </Text>
-                {ingredients.strIngredient1 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient1}${ingredients.strMeasure1 ? ` - ${ingredients.strMeasure1}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient2 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient2}${ingredients.strMeasure2 ? ` - ${ingredients.strMeasure2}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient3 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient3}${ingredients.strMeasure3 ? ` - ${ingredients.strMeasure3}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient4 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient4}${ingredients.strMeasure4 ? ` - ${ingredients.strMeasure4}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient5 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient5}${ingredients.strMeasure5 ? ` - ${ingredients.strMeasure5}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient6 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient6}${ingredients.strMeasure6 ? ` - ${ingredients.strMeasure6}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient7 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient7}${ingredients.strMeasure7 ? ` - ${ingredients.strMeasure7}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient8 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient8}${ingredients.strMeasure8 ? ` - ${ingredients.strMeasure8}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient9 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient9}${ingredients.strMeasure9 ? ` - ${ingredients.strMeasure9}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient10 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient10}${ingredients.strMeasure10 ? ` - ${ingredients.strMeasure10}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient11 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient11}${ingredients.strMeasure11 ? ` - ${ingredients.strMeasure11}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient12 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient12}${ingredients.strMeasure12 ? ` - ${ingredients.strMeasure12}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient13 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient13}${ingredients.strMeasure13 ? ` - ${ingredients.strMeasure13}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient14 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient14}${ingredients.strMeasure14 ? ` - ${ingredients.strMeasure14}` : ''}, `}
-                    </Text>
-                )}
-                {ingredients.strIngredient15 && (
-                    <Text style={styles.ingredients}>
-                        {`${ingredients.strIngredient15}${ingredients.strMeasure15 ? ` - ${ingredients.strMeasure15}` : ''}, `}
-                    </Text>
-                )}
-                <View style={styles.item2}>
+            </View>
+                {chunkArray(Object.entries(ingredientImages), 2).map((chunk, index) => (
+                <View key={index} style={styles.itemRow}>
+                    {chunk.map(([ingredient, imageUrl]) => (
+                    <View key={ingredient} style={styles.column}>
+                        <Image style={styles.image2} source={{ uri: imageUrl }} />
+                        <Text style={styles.ingredients2}>{ingredients[`strMeasure${index + 1}`]} {ingredient}</Text>
+                    </View>
+                    ))}
+                </View>
+                ))}
+                <View style={styles.item}>
                 <Text style={{ fontSize: 22, color: '#ffba00', fontWeight: '800' }}>
                 Instructions:
                 </Text>
-                <Text style={styles.ingredients}> {ingredients.strInstructions}</Text>
+                <Text style={styles.ingredients}>{ingredients.strInstructions}</Text>
                 </View>
-            </View>
 
             <View style={styles.item}>
                 <Text style={{ fontSize: 22, color: '#ffba00', fontWeight: '800' }}>
@@ -127,7 +98,7 @@ return (
 };
 
 const styles = StyleSheet.create({
-  details: {
+   details: {
     marginBottom: 30,
     padding: 2,
   },
@@ -135,8 +106,59 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#ffba00',
   },
+  ingredients2: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ffba00',
+    textAlign: 'center',
+  },
+  title: {
+    fontSize: 25,
+    color: '#ffba00',
+    bottom: 0,
+    padding: 5,
+  },
+  titlebg: {
+    fontSize: 50,
+    color: '#ffba00',
+    zIndex: 1,
+    position: 'absolute',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    bottom: 0,
+    margin: 10,
+  },
+  ingredients: {
+    fontSize: 20,
+    color: '#ffba00',
+  },
   item2: {
-    marginTop: 5,
+    margin: 10,
+    shadowRadius: 8,
+    borderRadius: 7,
+    padding: 5,
+    fontSize: 10,
+    alignItems: 'center',
+  },
+    image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    resizeMode: 'cover',
+  },
+  image2: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+    resizeMode: 'cover',
+  },
+  thumb: {
+    padding: 10,
   },
   item: {
     shadowColor: 'black',
@@ -144,7 +166,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    borderRadius: 10,
+    borderRadius: 7,
     backgroundColor: 'white',
     marginLeft: 10,
     marginRight: 10,
@@ -153,6 +175,22 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 10,
+  },
+  column: {
+    width: '48%',
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 15,
+    elevation: 5,
+    borderRadius: 7,
+    padding: 10,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList, Modal } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 const Home = ({navigation}) => {
@@ -69,15 +69,15 @@ const Home = ({navigation}) => {
           <FlatList
             style={styles.ingredients}
             data={ingredients}
+            numColumns={2}
             renderItem={({ item }) => (
-              <View style={styles.ingredients}>
+              <View style={styles.ingredients2}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Details', { ingredients: item }) }}>
                 <Image style={styles.image} source={{ uri: `${item.strDrinkThumb}` }} />
-                <View style={{ padding: 20, flexDirection: 'row' }}>
-                  <Text style={styles.label}>{item.strDrink}</Text>
-                  <TouchableOpacity onPress={() => { navigation.navigate('Details', { ingredients: item }) }}>
-                    <Text style={{ marginLeft: 50, fontSize: 20, color: '#ffba00' }}>Details</Text>
-                  </TouchableOpacity>
+                 <View style={styles.titlebg}>
+                <Text style={styles.title}> {item.strDrink}</Text>
                 </View>
+                </TouchableOpacity>
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -103,6 +103,12 @@ const styles = StyleSheet.create({
     ingredients: {
     fontSize: 20,
     color: '#ffba00',
+  },
+  ingredients2: {
+    width: '50%',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 15,
+    padding: 5,
   },
   inputField: {
     height: '60%',
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 150,
     borderRadius: 20,
     resizeMode: 'cover',
   },
@@ -154,7 +160,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     width: '60%',
     color: '#ffba00',
-    fontWeight: '700'
+    fontWeight: '700',
+    zIndex: 1,
+    position: 'absolute',
   },
   recipe: {
     shadowColor: 'black',
@@ -166,6 +174,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     margin: 5,
     marginBottom: 5
+  },
+    title: {
+    fontSize: 20,
+    color: '#ffba00',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 
 });
