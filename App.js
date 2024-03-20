@@ -9,6 +9,7 @@ import DetailsSurprise from './components/DetailsSurprise';
 import Details from './components/Details';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import AboutUsScreen from './components/AboutUsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +65,7 @@ export default function App() {
                 ),
             })}
         />
+        <Stack.Screen name="AboutUs" component={AboutUsScreen} />
       </Stack.Navigator>
       {isSidebarOpen && <Sidebar onClose={toggleSidebar} />}
     </NavigationContainer>

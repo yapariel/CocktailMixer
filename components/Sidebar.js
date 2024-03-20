@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const Sidebar = ({ onClose }) => {
+  const navigation = useNavigation();
   const sidebarWidth = width * 0.8;
   const sidebarPosition = new Animated.Value(-sidebarWidth);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -35,9 +37,17 @@ const Sidebar = ({ onClose }) => {
     setSelectedFilter(filter);
     setShowDropdown(false);
   };
+
+  const navigateToAboutUs = () => {
+    navigation.navigate('AboutUs');
+    closeSidebar();
+  };
+
   openSidebar();
 
 return (
+    <TouchableWithoutFeedback onPress={closeSidebar}>
+    <View style={styles.overlay}>
     <Animated.View style={[styles.container, { transform: [{ translateX: sidebarPosition }] }]}>
         <View style={styles.sidebar}>
           <TouchableOpacity style={styles.closeButton} onPress={closeSidebar}>
@@ -71,7 +81,7 @@ return (
                       </View>
                     )}
                     <Text style={styles.sidebarlabel}>Concoct Drinks</Text>
-                    <Text style={styles.sidebarlabel}>About Us</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToAboutUs}>About Us</Text>
                     </View>
             </View>
           <View style={styles.logoutbutton}>
@@ -79,10 +89,17 @@ return (
           </View>
         </View>
     </Animated.View>
+    </View>
+   </TouchableWithoutFeedback>
 );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
   container: {
     position: 'absolute',
     top: 0,
@@ -150,16 +167,11 @@ const styles = StyleSheet.create({
     padding: 20,
     color: '#4F4F4F',
     fontWeight: 'bold',
-    fontSize: 15, 
+    fontSize: 15,
   },
   logoutbutton: {
-    position: 'absolute',
-    bottom: 0,
-    zIndex: 1,
-    padding: 20,
-    color: '#4F4F4F',
-    fontWeight: 'bold',
-    fontSize: 15, 
+    alignSelf: 'center',
+    marginBottom: 20,
   },
 });
 
