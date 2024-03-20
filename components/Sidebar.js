@@ -54,12 +54,21 @@ const Sidebar = ({ onClose }) => {
   };
 
   const navigateToConcoctDrinks = () => {
-    navigation.navigate('Concoct Cocktails');
+    navigation.navigate('Concoct Cocktails'); 
+    closeSidebar();
+  }; 
+
+  const Alcoholic = () => {
+  navigation.navigate('Alcoholic'); 
     closeSidebar();
   };
 
+  const NonAlcoholic = () => {
+  navigation.navigate('NonAlcoholic'); 
+    closeSidebar();
+  };
 
-  openSidebar();
+  openSidebar(); Alcoholic
 
 return (
     <TouchableWithoutFeedback onPress={closeSidebar}>
@@ -86,10 +95,10 @@ return (
                     {showDropdown && (
                       <View style={styles.dropdown}>
                         <TouchableOpacity onPress={() => selectFilter('Alcoholic')}>
-                          <Text style={styles.dropdownOption}>Alcoholic</Text>
+                          <Text style={styles.dropdownOption} onPress={Alcoholic}>Alcoholic</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => selectFilter('Non-Alcoholic')}>
-                          <Text style={styles.dropdownOption}>Non-Alcoholic</Text>
+                          <Text style={styles.dropdownOption} onPress={NonAlcoholic}>Non-Alcoholic</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => selectFilter('Non-Alcoholic')}>
                           <Text style={styles.sidebarlabel} onPress={navigateToSearchIngredients}>By Ingredient</Text>
