@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 import Home from './components/Home';
 import DetailsSurprise from './components/DetailsSurprise';
 import Details from './components/Details';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -20,7 +28,7 @@ export default function App() {
           options={({ route, navigation }) => ({
                 header: (props) => (
                     <View style={styles.headerContainer}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.homedrawer}>
+                        <TouchableOpacity onPress={toggleSidebar} style={styles.homedrawer}>
                             <Image source={require('./assets/bars.png')} style={styles.drawer} />
                         </TouchableOpacity>
                         <Header name={route?.name || 'Details'} navigation={navigation} />
@@ -57,6 +65,7 @@ export default function App() {
             })}
         />
       </Stack.Navigator>
+      {isSidebarOpen && <Sidebar onClose={toggleSidebar} />}
     </NavigationContainer>
   );
 }
