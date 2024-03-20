@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const Sidebar = ({ onClose }) => {
+  const navigation = useNavigation();
   const sidebarWidth = width * 0.8;
   const sidebarPosition = new Animated.Value(-sidebarWidth);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(null);
 
   const openSidebar = () => {
     Animated.timing(sidebarPosition, {
@@ -25,11 +29,30 @@ const Sidebar = ({ onClose }) => {
     });
   };
 
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const selectFilter = (filter) => {
+    setSelectedFilter(filter);
+    setShowDropdown(false);
+  };
+
+  const navigateToAboutUs = () => {
+    navigation.navigate('AboutUs');
+    closeSidebar();
+  };
+
   openSidebar();
 
 return (
+    <TouchableWithoutFeedback onPress={closeSidebar}>
+    <View style={styles.overlay}>
     <Animated.View style={[styles.container, { transform: [{ translateX: sidebarPosition }] }]}>
         <View style={styles.sidebar}>
+          <TouchableOpacity style={styles.closeButton} onPress={closeSidebar}>
+          <Text style={styles.close}>x</Text>
+          </TouchableOpacity>
             <View style={styles.sidebarImage}>
                     <Image
                             source={require('../assets/header.png')}
@@ -39,20 +62,44 @@ return (
             <View style={styles.sidebarText}>
                     <View style={styles.label}>
                     <Text style={styles.sidebarlabel}>My Profile</Text>
-                    <Text style={styles.sidebarlabel}>My Favorites</Text>
-                    <Text style={styles.sidebarlabel}>Alcoholic</Text>
-                    <Text style={styles.sidebarlabel}>Non Alcoholic</Text>
-                    <Text style={styles.sidebarlabel}>Search by Ingredients</Text>
-                    <Text style={styles.sidebarlabel}>About Us</Text>
+                    <Text style={styles.sidebarlabel}>Explore Cocktails</Text>
+                    <Text style={styles.sidebarlabel}>Explore Ingredients</Text>
+                    <TouchableOpacity onPress={toggleDropdown}>
+                    <Text style={styles.sidebarlabel}>Filter By</Text>
+                    </TouchableOpacity>
+                    {showDropdown && (
+                      <View style={styles.dropdown}>
+                        <TouchableOpacity onPress={() => selectFilter('Alcoholic')}>
+                          <Text style={styles.dropdownOption}>Alcoholic</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => selectFilter('Non-Alcoholic')}>
+                          <Text style={styles.dropdownOption}>Non-Alcoholic</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => selectFilter('Non-Alcoholic')}>
+                          <Text style={styles.dropdownOption}>By Ingredient</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                    <Text style={styles.sidebarlabel}>Concoct Drinks</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToAboutUs}>About Us</Text>
                     </View>
             </View>
-            <Text onPress={closeSidebar}>Close Sidebar</Text>
+          <View style={styles.logoutbutton}>
+            <Text style={styles.logout} onPress={closeSidebar}>Logout</Text>
+          </View>
         </View>
     </Animated.View>
+    </View>
+   </TouchableWithoutFeedback>
 );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
   container: {
     position: 'absolute',
     top: 0,
@@ -103,6 +150,28 @@ const styles = StyleSheet.create({
      width: 15,
      height: 15,
      overlayColor: 'white',
+  },
+  close: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4F4F4F',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+    padding: 20,
+  },
+  logout: {
+    padding: 20,
+    color: '#4F4F4F',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  logoutbutton: {
+    alignSelf: 'center',
+    marginBottom: 20,
   },
 });
 
