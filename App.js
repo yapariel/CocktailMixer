@@ -20,6 +20,8 @@ import SearchIngredients from './components/SearchIngredients';
 import GenerateCocktail from './components/GenerateCocktail';
 import ExploreIngredients from './components/ExploreIngredients';
 import AboutUsScreen from './components/AboutUsScreen';
+import Alcoholic from './components/Alcoholic';
+import NonAlcoholic from './components/NonAlcoholic';
 
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './config/FirebaseConfig';
@@ -132,6 +134,8 @@ export default function App() {
             })}
         />
         <Stack.Screen name="AboutUs" component={AboutUsScreen} />
+        <Stack.Screen name="Alcoholic" component={Alcoholic} />
+        <Stack.Screen name="NonAlcoholic" component={NonAlcoholic} />
       </Stack.Navigator>
     )
   }
