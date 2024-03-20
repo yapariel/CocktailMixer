@@ -43,6 +43,22 @@ const Sidebar = ({ onClose }) => {
     closeSidebar();
   };
 
+  const navigateToExploreIngredients = () => {
+    navigation.navigate('Explore Ingredients');
+    closeSidebar();
+  };
+
+  const navigateToSearchIngredients = () => {
+    navigation.navigate('Search Ingredients');
+    closeSidebar();
+  };
+
+  const navigateToConcoctDrinks = () => {
+    navigation.navigate('Concoct Cocktails');
+    closeSidebar();
+  };
+
+
   openSidebar();
 
 return (
@@ -62,8 +78,8 @@ return (
             <View style={styles.sidebarText}>
                     <View style={styles.label}>
                     <Text style={styles.sidebarlabel}>My Profile</Text>
-                    <Text style={styles.sidebarlabel}>Explore Cocktails</Text>
-                    <Text style={styles.sidebarlabel}>Explore Ingredients</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToExploreIngredients}>Explore Cocktails</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToExploreIngredients}>Explore Ingredients</Text>
                     <TouchableOpacity onPress={toggleDropdown}>
                     <Text style={styles.sidebarlabel}>Filter By</Text>
                     </TouchableOpacity>
@@ -76,11 +92,11 @@ return (
                           <Text style={styles.dropdownOption}>Non-Alcoholic</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => selectFilter('Non-Alcoholic')}>
-                          <Text style={styles.dropdownOption}>By Ingredient</Text>
+                          <Text style={styles.sidebarlabel} onPress={navigateToSearchIngredients}>By Ingredient</Text>
                         </TouchableOpacity>
                       </View>
                     )}
-                    <Text style={styles.sidebarlabel}>Concoct Drinks</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToConcoctDrinks}>Concoct Drinks</Text>
                     <Text style={styles.sidebarlabel} onPress={navigateToAboutUs}>About Us</Text>
                     </View>
             </View>

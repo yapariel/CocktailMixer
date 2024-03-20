@@ -98,7 +98,7 @@ export default function App() {
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
                             <Image source={require('./assets/left-arrow.png')} style={styles.arrow} />
                         </TouchableOpacity>
-                        <Header name={route?.name || 'Details'} navigation={navigation} />
+                        <Header name={route?.name || 'ExploreIngredients'} navigation={navigation} />
                     </View>
                 ),
             })}
@@ -112,7 +112,7 @@ export default function App() {
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
                             <Image source={require('./assets/left-arrow.png')} style={styles.arrow} />
                         </TouchableOpacity>
-                        <Header name={route?.name || 'Details'} navigation={navigation} />
+                        <Header name={route?.name || 'ExploreIngredients'} navigation={navigation} />
                     </View>
                 ),
             })}
