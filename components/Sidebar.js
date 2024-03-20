@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { FIREBASE_AUTH, FIREBASE_STORE } from "../config/FirebaseConfig";
+
 const { width } = Dimensions.get('window');
 
 const Sidebar = ({ onClose }) => {
@@ -38,6 +40,11 @@ const Sidebar = ({ onClose }) => {
     setShowDropdown(false);
   };
 
+  const navigateToHome = () => {
+    navigation.navigate('COCKTAIL MIXER');
+    closeSidebar();
+  };
+
   const navigateToAboutUs = () => {
     navigation.navigate('AboutUs');
     closeSidebar();
@@ -54,7 +61,7 @@ const Sidebar = ({ onClose }) => {
   };
 
   const navigateToConcoctDrinks = () => {
-    navigation.navigate('Concoct Cocktails'); 
+    navigation.navigate('Search Ingredients'); 
     closeSidebar();
   }; 
 
@@ -68,7 +75,13 @@ const Sidebar = ({ onClose }) => {
     closeSidebar();
   };
 
-  openSidebar(); Alcoholic
+  const auth = FIREBASE_AUTH;
+  const logOut = async() => {
+      auth.signOut().then(() => console.log('User signed out!'));
+      closeSidebar();
+  }
+
+  openSidebar(); 
 
 return (
     <TouchableWithoutFeedback onPress={closeSidebar}>
@@ -87,7 +100,7 @@ return (
             <View style={styles.sidebarText}>
                     <View style={styles.label}>
                     <Text style={styles.sidebarlabel}>My Profile</Text>
-                    <Text style={styles.sidebarlabel} onPress={navigateToExploreIngredients}>Explore Cocktails</Text>
+                    <Text style={styles.sidebarlabel} onPress={navigateToHome}>Explore Cocktails</Text>
                     <Text style={styles.sidebarlabel} onPress={navigateToExploreIngredients}>Explore Ingredients</Text>
                     <TouchableOpacity onPress={toggleDropdown}>
                     <Text style={styles.sidebarlabel}>Filter By</Text>
@@ -110,7 +123,7 @@ return (
                     </View>
             </View>
           <View style={styles.logoutbutton}>
-            <Text style={styles.logout} onPress={closeSidebar}>Logout</Text>
+            <Text style={styles.logout} onPress={logOut}>Logout</Text>
           </View>
         </View>
     </Animated.View>

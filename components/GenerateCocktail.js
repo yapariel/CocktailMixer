@@ -27,6 +27,7 @@ const GenerateCocktail = ({ route, navigation }) => {
   const [ cocktailIds, setCocktailIds] = useState([]);
   const [ filtercocktailIds, setfilterCocktailIds] = useState([]);
   const [ cocktails, setCocktails] = useState([]);
+  const [ cocktailData, setCocktailData] = useState([]);
   const [ loading, setLoading] = useState(false);
 
   function getCocktailList(){
@@ -78,6 +79,7 @@ const GenerateCocktail = ({ route, navigation }) => {
       let resp = await fetch(apiCocktail);
       let respJson = await resp.json();
       const thisCocktail = respJson.drinks[0];
+
       let currentfilterCocktailIds = filtercocktailIds;
       let thisCocktailIngredients = getCocktailIngredients(thisCocktail).filter(n => n)
       if (includesAll(thisCocktailIngredients, selectedIngredient)){       
@@ -137,7 +139,7 @@ const GenerateCocktail = ({ route, navigation }) => {
                 <View style={{ padding: 20, flexDirection: 'row' }}>
                   <Text style={styles.label}>{item.strDrink}</Text>
                   <TouchableOpacity onPress={() => { navigation.navigate('Details', { ingredients: item }) }}>
-                    <Text style={{ marginLeft: 50, fontSize: 20, color: '#ffba00' }}>Details</Text>
+                    <Text style={{ marginLeft: 55, fontSize: 15, color: '#555' }}>Details</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     width: '60%',
-    color: '#ffba00',
+    color: '#b84009',
     fontWeight: '700'
   },
 });
