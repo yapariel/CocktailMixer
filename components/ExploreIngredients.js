@@ -21,13 +21,14 @@ export { IngredientsModal }
 // };
 
 const ExploreIngredients = ({ navigation }) => {
-  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [ingredientlist, setIngredientList] = useState([]);
   const [ingredientFilterlist, setFilteredIngredientList] = useState([]);
   const [withFilter, setWithFilter] = useState(false);
   const [modalIngredient, setModalIngredient] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingModal, setModalLoading] = useState(false);
 
   const [ingFavorite, setIngFavorite] = useState([]);
   const [ingInventory, setIngInventory] = useState([]);
@@ -85,7 +86,7 @@ const ExploreIngredients = ({ navigation }) => {
   }
 
   async function loadIngredient(apiIngredient) {
-    setLoading(true);
+    setModalLoading(true);
     try {
       let resp = await fetch(apiIngredient);
       let respJson = await resp.json();
@@ -94,7 +95,7 @@ const ExploreIngredients = ({ navigation }) => {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   }
   const onPressItem = (item) =>{
@@ -142,29 +143,35 @@ const ExploreIngredients = ({ navigation }) => {
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={() => (
               <View style={styles.container}>
-                <Text>No cocktails found.</Text>
+                <Text>No Ingredient found.</Text>
               </View>
             )}
           />     
         )}
       </SafeAreaView> 
       
-      <Modal animationType='slide' transparent={true} visible={ isModalVisible } onRequestClose= {()=> setModalVisible(false)}>
-        <View style={styles.modal_container}>
-          <View style={styles.modal}>
-            <TouchableOpacity style={styles.hide_modal_area} onPress= {()=> setModalVisible(false)} >
-              <Text style={styles.hide_modal}>Hide</Text>
-            </TouchableOpacity>
-            <IngredientsModal 
-              item = {modalIngredient} 
-              favorites={ingFavorite} 
-              inventory={ingInventory} 
-              onChangeFavorite={setIngFavorite} 
-              onChangeInventory={setIngInventory}
-             />
+      {loadingModal ? 
+      ( 
+        <ActivityIndicator size="large" color="#ffba00" />          
+      ) : (
+        <Modal animationType='slide' transparent={true} visible={ isModalVisible } onRequestClose= {()=> setModalVisible(false)}>
+          <View style={styles.modal_container}>
+            
+            <View style={styles.modal}>
+              <TouchableOpacity style={styles.hide_modal_area} onPress= {()=> setModalVisible(false)} >
+                <Text style={styles.hide_modal}>Hide</Text>
+              </TouchableOpacity>
+              <IngredientsModal 
+                item = {modalIngredient} 
+                favorites={ingFavorite} 
+                inventory={ingInventory} 
+                onChangeFavorite={setIngFavorite} 
+                onChangeInventory={setIngInventory}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>        
+        </Modal>
+      )}        
     </View>
   )
 }
