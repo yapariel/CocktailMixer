@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Image, StyleSheet, Keyboard, SafeAreaView, ActivityIndicator, FlatList, Alert } from 'react-native';
 import { collection, addDoc } from "firebase/firestore"; 
 import  IngredientsCheckBox  from "./parts/IngredientsCheckBox";
 export { IngredientsCheckBox }
@@ -47,7 +47,7 @@ const SearchIngredients = ({ navigation }) => {
         }
         return 0;
       });
-      setIngredientList(listIngredients);
+      setIngredientList(listIngredients); 
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -80,8 +80,12 @@ const SearchIngredients = ({ navigation }) => {
     }
   }
 
-  function generateCocktail(){
-    console.log(checkedlist);
+  function checkSelectedIngredients(){ 
+    if(checkedlist.length > 0){ 
+      navigation.navigate('Concoct Cocktails', { selectedIngredient: checkedlist }) 
+    }else{
+      Alert.alert('Select at least one ingredient');
+    }
   }
 
   return(
@@ -111,19 +115,21 @@ const SearchIngredients = ({ navigation }) => {
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={() => (
               <View style={styles.container}>
-                <Text>No cocktails found.</Text>
+                <Text>No ingredient found.</Text>
               </View>
             )}
           />
         )}
       </SafeAreaView>
 
-      <TouchableOpacity style={styles.generate_cocktail} onPress={() => { navigation.navigate('Generate Cocktail', { selectedIngredient: checkedlist }) }}>
-          <Text style={{ fontSize: 15, color: '#252422', fontWeight: 700 }}>Generate Cocktail</Text>
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.generate_cocktail} 
+        onPress={checkSelectedIngredients}
+      >
+          <Text style={{ fontSize: 15, color: '#fff', fontWeight: 800 }}>Generate Cocktail</Text>
+      </TouchableOpacity> 
     </View>
   )
-}
+}  
 
 const styles = StyleSheet.create({
   container: {

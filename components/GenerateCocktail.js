@@ -21,22 +21,23 @@ export { IngredientsCheckBox }
  
 // }; 
 
-const GenerateCocktail = ({ route }) => {
+const GenerateCocktail = ({ route, navigation }) => {
   const { selectedIngredient } = route.params;
-   
+  const lengthofselect = selectedIngredient.length;
   const [ cocktailIds, setCocktailIds] = useState([]);
   const [ filtercocktailIds, setfilterCocktailIds] = useState([]);
   const [ cocktails, setCocktails] = useState([]);
   const [ loading, setLoading] = useState(false);
 
   function getCocktailList(){
-    selectedIngredient.forEach((ingredient) => {
+    setCocktailIds([]);
+    selectedIngredient.forEach((ingredient, index) => {
       const apiListCocktail = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${ingredient}`;
-      searchCocktailbyIngredient(apiListCocktail) 
+      searchCocktailbyIngredient(apiListCocktail, index)
     }); 
   } 
 
-  async function searchCocktailbyIngredient(apiListCocktail) {
+  async function searchCocktailbyIngredient(apiListCocktail, index) {
     try {
       setLoading(true);
       let resp = await fetch(apiListCocktail);
@@ -50,19 +51,16 @@ const GenerateCocktail = ({ route }) => {
         }    
       });
       setCocktailIds(currentCocktailIds);
+      if(index == lengthofselect-1){
+        currentCocktailIds.forEach((cocktailId) => {
+          const apiCocktail = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`;
+          searchCocktailbyId(apiCocktail)
+        });
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
-    }
+    } finally {}
   }  
-
-  function filterCocktails(){
-    cocktailIds.forEach((cocktailId) => {
-      const apiCocktail = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`;
-      searchCocktailbyId(apiCocktail)
-    });
-  }
 
   function getCocktailIngredients(cocktail){
     let ingredients = [];
@@ -94,42 +92,33 @@ const GenerateCocktail = ({ route }) => {
     } catch (error) {
       console.error('Error fetching data:', error); 
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   }  
 
-  function displayCocktails(){
-    filtercocktailIds.forEach((cocktailId) => {
-      const apiCocktail = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`;
-      getCocktailInfo(apiCocktail)
-    }); 
-  }
-
-  // async function getCocktailInfo(apiCocktail) {
-  //   try {
-  //     setLoading(true);
-  //     let resp = await fetch(apiCocktail);
-  //     let respJson = await resp.json();
-  //     const thisCocktail = respJson.drinks[0];
-  //     setCocktails(oldArray => [...oldArray, thisCocktail]);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error); 
-  //   } finally { 
-  //     setLoading(false);  
-  //   }
-  // }  
+  async function searchCocktailbyOnengredient(apiCocktail) {
+    try {
+      setLoading(true);
+      let resp = await fetch(apiCocktail);
+      let respJson = await resp.json();
+      const theseCocktails = respJson.drinks;
+      setCocktails(theseCocktails);      
+    } catch (error) {
+      console.error('Error fetching data:', error); 
+    } finally {
+      setLoading(false);
+    }
+  } 
 
   useEffect(() => {  
-    setLoading(true)
-    getCocktailList();
-    filterCocktails(cocktailIds);
-    // displayCocktails();    
-    console.log(filtercocktailIds);
-    // return () => { 
-    //   setCocktailIds([]); 
-    //   setfilterCocktailIds([]);
-    //   setCocktails([]);  
-    // }
+    setLoading(true);
+    if(selectedIngredient.length < 2){
+      let searchCocktailApi =  `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${selectedIngredient[0]}`;
+      searchCocktailbyOnengredient(searchCocktailApi);
+    }
+    else{
+      getCocktailList();
+    }
   }, [])
   
   return(
@@ -147,7 +136,7 @@ const GenerateCocktail = ({ route }) => {
                 <Image style={styles.image} source={{ uri: `${item.strDrinkThumb}` }} />
                 <View style={{ padding: 20, flexDirection: 'row' }}>
                   <Text style={styles.label}>{item.strDrink}</Text>
-                  <TouchableOpacity onPress={() => { route.navigate('Details', { ingredients: item }) }}>
+                  <TouchableOpacity onPress={() => { navigation.navigate('Details', { ingredients: item }) }}>
                     <Text style={{ marginLeft: 50, fontSize: 20, color: '#ffba00' }}>Details</Text>
                   </TouchableOpacity>
                 </View>
